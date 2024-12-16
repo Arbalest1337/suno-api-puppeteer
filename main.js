@@ -3,7 +3,6 @@ import express from 'express'
 import { Suno } from './src/suno-puppeteer.js'
 
 const suno = new Suno(process.env.SUNO_COOKIE)
-await suno.init()
 
 const PORT = 6657
 const app = express()
