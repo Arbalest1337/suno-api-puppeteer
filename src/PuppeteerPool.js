@@ -8,7 +8,10 @@ export class PuppeteerPool {
   }
 
   async init() {
-    this.browser = await puppeteer.launch({ headless: true })
+    this.browser = await puppeteer.launch({
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+      headless: true
+    })
     for (let i = 0; i < this.maxPages; i++) {
       const page = await this.browser.newPage()
       this.pages.push(page)
