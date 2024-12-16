@@ -18,12 +18,17 @@ export class Suno {
     this.cookieArr = cookie2Arr(this.cookie)
     this.userAgent = new UserAgent(/Chrome/).random().toString()
     this.pool = new PuppeteerPool()
+    this.init()
   }
 
   async init() {
-    await this.pool.init()
-    await this.getSessionId()
-    await this.getJwt()
+    try {
+      await this.pool.init()
+      await this.getSessionId()
+      await this.getJwt()
+    } catch (err) {
+      console.log('Suno init error :', err)
+    }
   }
 
   async usePage(callback, method = 'GET') {
@@ -78,6 +83,7 @@ export class Suno {
   }
 
   async getCredits() {
+    await this.getJwt()
     const url = `${BASE_URL}/api/billing/info/`
     const res = await fetch(url, {
       headers: { ...this.initFetchHeaders() }
@@ -102,6 +108,7 @@ export class Suno {
   }
 
   async get(ids = []) {
+    await this.getJwt()
     let url = `${BASE_URL}/api/feed/`
     if (ids?.length) url = `${url}?ids=${ids.join(',')}`
     const res = await fetch(url, { headers: { ...this.initFetchHeaders() } }).then(res =>

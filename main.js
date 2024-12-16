@@ -41,6 +41,15 @@ app.get('/credits', async (req, res) => {
   }
 })
 
+app.get('/init', async (req, res) => {
+  try {
+    const response = await suno.init()
+    res.send(success('init finished'))
+  } catch (err) {
+    res.send(failed(err))
+  }
+})
+
 app.listen(PORT, () => {
   console.log(`app listening on port ${PORT}`)
 })
