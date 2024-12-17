@@ -12,3 +12,5 @@ Content-Type: application/json
 ### Get Songs
 GET {{baseUrl}}/get
 
+### Get Songs
+GET {{baseUrl}}/generate

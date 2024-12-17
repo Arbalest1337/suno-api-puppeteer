@@ -92,7 +92,7 @@ export class Suno {
     return res
   }
 
-  async generate({ prompt = '', make_instrumental = false }) {
+  async generate({ prompt = 'happy', make_instrumental = false }) {
     await this.getJwt()
     const payload = {
       generation_type: 'TEXT',

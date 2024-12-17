@@ -14,9 +14,9 @@ const GlobalMiddleware = (req, res, next) => {
 }
 app.use(GlobalMiddleware)
 
-app.post('/generate', async (req, res) => {
+app.get('/generate', async (req, res) => {
   try {
-    const { prompt, make_instrumental } = req.body
+    const { prompt, make_instrumental } = req.query
     const response = await suno.generate({ prompt, make_instrumental })
     res.send(success(response))
   } catch (err) {
