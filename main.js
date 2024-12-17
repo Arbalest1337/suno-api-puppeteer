@@ -16,6 +16,8 @@ app.use(GlobalMiddleware)
 
 app.post('/generate', async (req, res) => {
   try {
+    const { prompt, make_instrumental } = req.body
+    const response = await suno.generate({ prompt, make_instrumental })
     res.send(success(response))
   } catch (err) {
     res.send(failed(err))

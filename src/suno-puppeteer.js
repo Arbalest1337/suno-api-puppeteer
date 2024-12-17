@@ -31,14 +31,15 @@ export class Suno {
     }
   }
 
-  async usePage(callback, method = 'GET') {
+  async usePage(callback, method = 'GET', postData) {
     const page = await this.pool.getPage()
     const isPost = method.toUpperCase() === 'POST'
     await page.setCookie(...this.cookieArr)
     const interceptor = interceptedRequest => {
       interceptedRequest.continue({
         method: method.toUpperCase(),
-        headers: { 'User-Agent': this.userAgent }
+        postData,
+        headers: { 'User-Agent': this.userAgent, ['Authorization']: `Bearer ${this.jwt}` }
       })
     }
     await page.setRequestInterception(true)
@@ -76,8 +77,8 @@ export class Suno {
 
   initFetchHeaders() {
     return {
+      ['session-id']: this.sessionId,
       'User-Agent': this.userAgent,
-      ['Cookie']: this.cookie,
       ['Authorization']: `Bearer ${this.jwt}`
     }
   }
@@ -94,16 +95,28 @@ export class Suno {
   async generate({ prompt = '', make_instrumental = false }) {
     await this.getJwt()
     const payload = {
+      generation_type: 'TEXT',
+      metadata: { lyrics_model: 'default' },
+      prompt: '',
       gpt_description_prompt: prompt,
       make_instrumental,
+      token: null,
+      user_uploaded_images_b64: [],
       mv: 'chirp-v3-5'
     }
     const url = `${BASE_URL}/api/generate/v2/`
+    console.log(JSON.stringify(payload))
+
     const res = await fetch(url, {
-      method: 'post',
-      data: JSON.stringify(payload),
-      headers: { ...this.initFetchHeaders() }
-    }).then(res => res.json())
+      method: 'POST',
+      body: JSON.stringify(payload),
+      headers: { ...this.initFetchHeaders() },
+      mode: 'cors',
+      referrer: 'https://suno.com/',
+      referrerPolicy: 'strict-origin-when-cross-origin',
+      credentials: 'include'
+    })
+    console.log(res)
     return res
   }
 
